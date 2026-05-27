@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario de Colirios — Postoperatorio de Cataratas</title>
+<style>
+/* ================================================
+   TOKENS
+================================================ */
+:root{
+  --navy:#0C3547; --blue:#1A6FA8; --sky:#4BA9D9;
+  --ice:#EAF4FB; --white:#FFF; --cream:#F5F3EE;
+  --gold:#C47F17; --green:#1A7A45; --red:#B03030;
+  --g50:#F8F9FB; --g100:#EFF1F5; --g200:#DDE2EC;
+  --g400:#9AA3B2; --g600:#5D6878; --g900:#1A1F2B;
+  --r:8px; --rs:5px;
+  --sh1:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --sh2:0 4px 16px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
+  --ffd:Georgia,'Times New Roman',serif;
+  --ffb:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --c0:#1A6FA8;--c1:#219150;--c2:#C76B12;--c3:#7B3FA0;--c4:#B02830;--c5:#138080;
+  --w1b:#E5F3FB;--w1a:#1A6FA8;
+  --w2b:#E5F7ED;--w2a:#219150;
+  --w3b:#FEF8E6;--w3a:#C07800;
+  --w4b:#F9EDF8;--w4a:#7B3FA0;
+  --w5b:#EEF1FF;--w5a:#3C44B8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--ffb);background:var(--cream);color:var(--g900);line-height:1.55;font-size:15px}
+
+/* HEADER */
+.pg-header{
+  background:linear-gradient(140deg,var(--navy) 0%,#164E72 55%,var(--blue) 100%);
+  color:#fff;padding:2.5rem 2rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+.pg-header::before{content:'';position:absolute;top:-80px;right:-80px;
+  width:300px;height:300px;background:rgba(255,255,255,.04);border-radius:50%}
+.pg-header h1{font-family:var(--ffd);font-size:2rem;font-weight:normal;
+  letter-spacing:-.4px;margin-bottom:.3rem;position:relative}
+.pg-header p{font-size:.9rem;opacity:.7;letter-spacing:.4px;position:relative}
+.drop-icon{font-size:2.6rem;display:block;margin-bottom:.65rem;position:relative}
+
+/* FORM WRAPPER */
+.fw{max-width:820px;margin:0 auto;padding:2rem 1.5rem 3rem}
+
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh2);
+  padding:1.65rem 2rem;margin-bottom:1.4rem}
+.card-title{font-family:var(--ffd);font-size:1.05rem;color:var(--navy);
+  margin-bottom:1.2rem;padding-bottom:.65rem;
+  border-bottom:2px solid var(--ice);display:flex;align-items:center;gap:.5rem}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;margin-bottom:.85rem}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:.85rem}
+.form-group{display:flex;flex-direction:column;gap:.28rem}
+
+label{font-size:.75rem;font-weight:700;color:var(--g600);
+  text-transform:uppercase;letter-spacing:.5px}
+input[type=text],input[type=date],select{
+  padding:.6rem .85rem;border:1.5px solid var(--g200);border-radius:var(--rs);
+  font-size:.9rem;font-family:var(--ffb);color:var(--g900);
+  background:var(--g50);transition:border-color .18s,box-shadow .18s;
+  -webkit-appearance:none;appearance:none}
+input:focus,select:focus{outline:none;border-color:var(--blue);background:#fff;
+  box-shadow:0 0 0 3px rgba(26,111,168,.12)}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235D6878' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .6rem center;
+  background-size:14px;padding-right:2rem;cursor:pointer}
+
+/* DROP CARDS */
+.drops-container{display:flex;flex-direction:column;gap:1.1rem}
+.drop-card{border:1.5px solid var(--g200);border-radius:var(--rs);
+  padding:1.15rem 1.2rem 1rem;background:var(--g50);transition:border-color .2s}
+.drop-card:focus-within{border-color:var(--sky)}
+.drop-card-header{display:flex;align-items:flex-end;gap:.75rem;margin-bottom:1rem}
+.drop-num{width:26px;height:26px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;
+  font-size:.74rem;font-weight:800;color:#fff;flex-shrink:0;margin-bottom:2px}
+.drop-name-group{flex:1}
+
+/* WEEK FREQUENCY GRID */
+.wfg-label{font-size:.72rem;font-weight:700;color:var(--g600);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem}
+.wfg-header{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin-bottom:.3rem}
+.wfg-header span{font-size:.7rem;font-weight:700;color:var(--g600);
+  text-transform:uppercase;letter-spacing:.4px;text-align:center}
+.wfg-selects{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem}
+.wfg-selects select{font-size:.76rem;padding:.48rem .28rem .48rem .48rem;
+  padding-right:1.6rem;background-size:11px}
+.wfg-selects select.inactive{color:var(--g400);background-color:#f0f0f0}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.42rem;
+  padding:.74rem 1.45rem;border:none;border-radius:var(--rs);
+  font-size:.9rem;font-weight:700;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;font-family:var(--ffb);letter-spacing:.2px}
+.btn:active{transform:translateY(1px)!important}
+.btn-primary{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;
+  box-shadow:0 2px 10px rgba(12,53,71,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(12,53,71,.4)}
+.btn-secondary{background:#fff;color:var(--navy);border:1.5px solid var(--g200)}
+.btn-secondary:hover{background:var(--ice);border-color:var(--blue)}
+.btn-print{background:linear-gradient(135deg,#955E10,#D4922A);color:#fff;
+  box-shadow:0 2px 10px rgba(149,94,16,.26)}
+.btn-print:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(149,94,16,.36)}
+.actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.4rem}
+.error-msg{color:var(--red);background:#FDF0EF;border:1.5px solid #E8AEAD;
+  border-radius:var(--rs);padding:.65rem 1rem;font-size:.87rem;
+  margin-top:1rem;display:none}
+
+/* ================================================
+   SCHEDULE
+================================================ */
+.sch-header{background:linear-gradient(140deg,var(--navy),var(--blue));
+  color:#fff;padding:1.6rem 1.75rem;border-radius:var(--r) var(--r) 0 0}
+.sch-header h2{font-family:var(--ffd);font-size:1.35rem;font-weight:normal;margin-bottom:.55rem}
+.patient-meta{display:flex;gap:1.3rem;flex-wrap:wrap;font-size:.83rem;opacity:.83}
+.patient-meta span{display:flex;align-items:center;gap:.28rem}
+
+/* Nurse info bar */
+.nurse-bar{
+  background:#E8F7F0;border:1px solid #B6DFC9;border-radius:var(--rs);
+  padding:.6rem 1rem;margin:1.1rem 0 0;display:flex;
+  align-items:center;gap:.6rem;font-size:.82rem;color:#1A4D35}
+.nurse-bar strong{color:#0D3B25}
+
+/* Legend */
+.legend{background:#fff;border:1px solid var(--g200);border-radius:var(--rs);
+  padding:.85rem 1rem;margin:1.1rem 0;display:flex;flex-wrap:wrap;
+  gap:.55rem;align-items:center}
+.leg-title{font-size:.7rem;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--g600);font-weight:800;margin-right:.4rem}
+.leg-item{display:flex;align-items:center;gap:.35rem;font-size:.8rem}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Week nav */
+.week-nav{display:flex;gap:.38rem;margin-bottom:1.4rem;flex-wrap:wrap}
+.wnav-btn{padding:.35rem .9rem;border:1.5px solid var(--g200);border-radius:20px;
+  font-size:.8rem;cursor:pointer;background:#fff;color:var(--g600);
+  font-family:var(--ffb);font-weight:600;transition:all .15s}
+.wnav-btn:hover,.wnav-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* Week sections */
+.week-sec{margin-bottom:2rem}
+.week-hdr{display:flex;align-items:center;gap:.55rem;
+  padding:.72rem 1.1rem;border-radius:var(--rs) var(--rs) 0 0;
+  font-weight:700;font-size:.9rem;border-left:4px solid transparent}
+.week-1 .week-hdr{background:var(--w1b);border-color:var(--w1a);color:#0D3D6B}
+.week-2 .week-hdr{background:var(--w2b);border-color:var(--w2a);color:#0D4D27}
+.week-3 .week-hdr{background:var(--w3b);border-color:var(--w3a);color:#6B4500}
+.week-4 .week-hdr{background:var(--w4b);border-color:var(--w4a);color:#4A1870}
+.week-5 .week-hdr{background:var(--w5b);border-color:var(--w5a);color:#202278}
+.week-badge{margin-left:auto;font-size:.72rem;font-weight:600;
+  padding:.14rem .5rem;border-radius:20px;background:rgba(0,0,0,.1);white-space:nowrap}
+.week-dates{font-size:.78rem;font-weight:400;opacity:.75}
+
+/* Days */
+.days-grid{border:1px solid var(--g200);border-top:none;
+  border-radius:0 0 var(--rs) var(--rs);overflow:hidden}
+.day-row{border-bottom:1px solid var(--g200);display:flex}
+.day-row:last-child{border-bottom:none}
+.day-row.is-today .day-lbl{background:#FFF8E6}
+.day-row.is-today .day-num{color:var(--gold)}
+
+.day-lbl{width:88px;flex-shrink:0;padding:.65rem .8rem;
+  background:var(--g50);border-right:1px solid var(--g200);
+  display:flex;flex-direction:column;justify-content:center}
+.day-num{font-weight:800;font-size:1rem;color:var(--navy);line-height:1.1}
+.day-name{font-size:.67rem;color:var(--g600);text-transform:uppercase;letter-spacing:.4px}
+.day-date{font-size:.65rem;color:var(--g400);margin-top:.08rem}
+
+.day-slots{flex:1;padding:.4rem .75rem;display:flex;flex-direction:column;gap:.18rem}
+.no-doses{color:var(--g400);font-size:.76rem;font-style:italic;padding:.2rem 0}
+
+/* Time groups */
+.tg{display:flex;align-items:flex-start;gap:.45rem;padding:.18rem 0;flex-wrap:wrap}
+.t-label{font-weight:800;font-size:.8rem;color:var(--g900);
+  min-width:44px;padding-top:.16rem;font-variant-numeric:tabular-nums;flex-shrink:0}
+.dose-list{display:flex;flex-wrap:wrap;gap:.28rem;flex:1}
+
+/* Dose items */
+.dose-item{display:inline-flex;align-items:center;gap:.22rem}
+.dose-item input[type=checkbox]{width:14px;height:14px;cursor:pointer;
+  accent-color:var(--green);flex-shrink:0}
+.dose-item>label{display:inline-flex;align-items:center;gap:.25rem;
+  cursor:pointer;font-weight:500;text-transform:none;
+  letter-spacing:0;font-size:.78rem;color:var(--g900);transition:opacity .15s}
+.dose-item input:checked+label{opacity:.4;text-decoration:line-through}
+.dose-pill{display:inline-flex;align-items:center;gap:.22rem;
+  padding:.07rem .42rem;border-radius:3px;font-size:.75rem;
+  font-weight:700;color:#fff;white-space:nowrap;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.dot-mini{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.65);flex-shrink:0}
+
+/* Nurse signature field */
+.nurse-sig{
+  width:42px;height:22px;padding:0 .3rem;
+  border:1px solid var(--g200);border-radius:3px;
+  font-size:.7rem;font-family:var(--ffb);text-align:center;
+  color:var(--navy);background:var(--g50);
+  vertical-align:middle;
+}
+.nurse-sig:focus{outline:none;border-color:var(--blue);background:#fff}
+.sig-sep{color:var(--g400);font-size:.7rem;padding:0 .08rem;user-select:none}
+
+/* Summary */
+.sum-section{margin-top:1.75rem}
+.sum-title{font-family:var(--ffd);font-size:1.05rem;color:var(--navy);
+  margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.sum-table{width:100%;border-collapse:collapse;font-size:.83rem}
+.sum-table th{background:var(--navy);color:#fff;padding:.55rem .85rem;text-align:left;
+  font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.4px;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sum-table td{padding:.5rem .85rem;border-bottom:1px solid var(--g200)}
+.sum-table tbody tr:nth-child(even) td{background:var(--g50)}
+.freq-on{display:inline-block;padding:.08rem .45rem;border-radius:3px;
+  font-size:.73rem;font-weight:700;color:#fff;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.freq-off{color:var(--g200);font-size:.8rem}
+.disclaimer{margin-top:1.6rem;padding:.85rem 1rem;background:var(--ice);border-radius:var(--rs);
+  border-left:3px solid var(--blue);font-size:.78rem;color:var(--g600);line-height:1.5}
+
+/* ================================================
+   PRINT
+================================================ */
+@media print{
+  body{background:#fff;font-size:9pt}
+  #formSection,.no-print{display:none!important}
+  #scheduleOutput{display:block!important}
+  .fw{max-width:100%!important;padding:0!important}
+
+  .sch-header{background:#fff!important;color:#000!important;
+    border-bottom:1.5pt solid #000;border-radius:0;padding:.5rem 0 .45rem}
+  .sch-header h2{color:#000!important;font-size:12.5pt}
+  .patient-meta{color:#333!important;opacity:1!important;font-size:.78rem}
+
+  .nurse-bar{background:#f0fbf5!important;border:.5pt solid #aaa;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+    margin-top:.5rem;padding:.4rem .7rem}
+
+  .legend{border:.5pt solid #ccc;margin:.5rem 0;padding:.45rem .7rem}
+  .leg-dot{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  .week-hdr{-webkit-print-color-adjust:exact;print-color-adjust:exact;
+    padding:.38rem .7rem;font-size:.82rem}
+  .week-1 .week-hdr{background:var(--w1b)!important;color:#000!important}
+  .week-2 .week-hdr{background:var(--w2b)!important;color:#000!important}
+  .week-3 .week-hdr{background:var(--w3b)!important;color:#000!important}
+  .week-4 .week-hdr{background:var(--w4b)!important;color:#000!important}
+  .week-5 .week-hdr{background:var(--w5b)!important;color:#000!important}
+
+  .week-sec{margin-bottom:.9rem;page-break-inside:avoid}
+  .days-grid{border:.5pt solid #ccc}
+  .day-row{border-bottom:.5pt solid #ddd;page-break-inside:avoid}
+  .day-lbl{background:#f4f4f4!important;-webkit-print-color-adjust:exact;
+    print-color-adjust:exact;width:76px;padding:.35rem .55rem}
+  .day-num{font-size:.9rem}
+  .day-slots{padding:.28rem .55rem;gap:.12rem}
+
+  .tg{padding:.08rem 0}
+  .t-label{font-size:.74rem;min-width:38px}
+  .dose-pill{-webkit-print-color-adjust:exact;print-color-adjust:exact;
+    font-size:.69rem;padding:.04rem .32rem}
+  .dose-item input[type=checkbox]{width:11px;height:11px}
+  .dose-item>label{font-size:.72rem}
+
+  .nurse-sig{
+    border:none;border-bottom:.5pt solid #888;
+    border-radius:0;background:transparent!important;
+    width:34px;height:18px;font-size:.66rem;
+  }
+
+  .sum-table{font-size:.76rem}
+  .sum-table th{-webkit-print-color-adjust:exact;print-color-adjust:exact;
+    background:var(--navy)!important;color:#fff!important;padding:.32rem .6rem;font-size:.7rem}
+  .sum-table td{padding:.28rem .6rem}
+  .freq-on{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .disclaimer{border-left:.5pt solid #999;background:#f8f8f8!important;
+    font-size:.72rem;padding:.45rem .65rem}
+
+  @page{size:A4 portrait;margin:1.4cm 1.5cm 1.4cm 1.5cm}
+}
+
+@media(max-width:640px){
+  .form-row,.form-row-2{grid-template-columns:1fr}
+  .wfg-header,.wfg-selects{grid-template-columns:repeat(3,1fr)}
+  .wfg-header span:nth-child(n+4),.wfg-selects select:nth-child(n+4){display:none}
+  .pg-header h1{font-size:1.55rem}
+  .day-lbl{width:74px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================================================
+     FORM SECTION
+================================================ -->
+<div id="formSection">
+  <header class="pg-header">
+    <span class="drop-icon">👁️</span>
+    <h1>Calendario de Colirios</h1>
+    <p>Registro postoperatorio de cirugía de cataratas</p>
+  </header>
+
+  <div class="fw">
+
+    <!-- Patient + Nurse data -->
+    <div class="card">
+      <h2 class="card-title">👤 Paciente y Profesional Responsable</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="patientName">Nombre completo del paciente</label>
+          <input type="text" id="patientName" placeholder="Apellidos, Nombre"/>
+        </div>
+        <div class="form-group">
+          <label for="surgeryDate">Fecha de la cirugía</label>
+          <input type="date" id="surgeryDate"/>
+        </div>
+        <div class="form-group">
+          <label for="nurseName">Enfermera/o responsable</label>
+          <input type="text" id="nurseName" placeholder="Nombre del/la enfermero/a"/>
+        </div>
+      </div>
+      <div style="font-size:.78rem;color:var(--g600);margin-top:.3rem">
+        💡 En el calendario, cada dosis incluye un campo de iniciales para anotar quién la administra.
+      </div>
+    </div>
+
+    <!-- Num drops -->
+    <div class="card">
+      <h2 class="card-title">💊 Número de Colirios</h2>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="numDrops">Cantidad de colirios prescritos (mínimo 3)</label>
+          <select id="numDrops" onchange="buildDropForms()">
+            <option value="3">3 colirios</option>
+            <option value="4">4 colirios</option>
+            <option value="5">5 colirios</option>
+            <option value="6">6 colirios</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;padding-top:.3rem">
+          <p style="font-size:.8rem;color:var(--g600);line-height:1.55">
+            Configure la frecuencia de cada colirio <strong>semana a semana</strong>.<br>
+            Use «— No usar —» para las semanas en que se suspende.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drop configuration -->
+    <div class="card">
+      <h2 class="card-title">🔬 Pauta Semanal de Cada Colirio</h2>
+      <div id="dropsContainer" class="drops-container"></div>
+    </div>
+
+    <div id="errorMsg" class="error-msg"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="generateSchedule()">
+        📅 Generar Calendario
+      </button>
+    </div>
+
+  </div>
+</div><!-- /formSection -->
+
+<!-- ================================================
+     SCHEDULE OUTPUT
+================================================ -->
+<div id="scheduleOutput" style="display:none">
+  <div class="fw" style="max-width:980px">
+
+    <div class="actions no-print" style="margin-bottom:1.2rem">
+      <button class="btn btn-secondary" onclick="goBack()">← Volver al formulario</button>
+      <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+    </div>
+
+    <div id="scheduleContent"></div>
+
+  </div>
+</div>
+
+<script>
+/* ================================================
+   DATA
+================================================ */
+const FREQ = [
+  {v:"5x", lbl:"5 veces/día", short:"5×/día",  times:["08:00","11:00","14:00","17:00","21:00"]},
+  {v:"4x", lbl:"4 veces/día", short:"4×/día",  times:["09:00","13:00","17:00","21:00"]},
+  {v:"3x", lbl:"3 veces/día", short:"3×/día",  times:["09:00","15:00","21:00"]},
+  {v:"2x", lbl:"2 veces/día", short:"2×/día",  times:["09:00","21:00"]},
+  {v:"1x", lbl:"1 vez/día",   short:"1×/día",  times:["09:00"]},
+  {v:"0",  lbl:"— No usar —", short:"—",        times:[]},
+];
+const COLORS=["#1A6FA8","#219150","#C76B12","#7B3FA0","#B02830","#138080"];
+const DIAS=["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+
+const checkState={};
+const initState={};
+
+/* ================================================
+   INIT
+================================================ */
+document.addEventListener('DOMContentLoaded',()=>{
+  const t=new Date();
+  document.getElementById('surgeryDate').value=t.toISOString().slice(0,10);
+  buildDropForms();
+});
+
+/* ================================================
+   BUILD DROP FORMS
+================================================ */
+function buildDropForms(){
+  const n=+document.getElementById('numDrops').value;
+  const c=document.getElementById('dropsContainer');
+  c.innerHTML='';
+  for(let i=0;i<n;i++){
+    const div=document.createElement('div');
+    div.className='drop-card';
+    const freqOpts = FREQ.map(f=>`<option value="${f.v}">${f.lbl}</option>`).join('');
+    // Default: week 1 = 4x, weeks 2-5 = 0 (no usar)
+    const weekSelects=[0,1,2,3,4].map(w=>{
+      const opts=FREQ.map(f=>{
+        const sel=(w===0&&f.v==='4x')||(w>0&&f.v==='0')?'selected':'';
+        return `<option value="${f.v}" ${sel}>${f.lbl}</option>`;
+      }).join('');
+      return `<select id="df_${i}_${w}" onchange="styleSelect(this)">${opts}</select>`;
+    }).join('');
+
+    div.innerHTML=`
+      <div class="drop-card-header">
+        <div class="drop-num" style="background:${COLORS[i]}">${i+1}</div>
+        <div class="drop-name-group form-group" style="flex:1">
+          <label for="dn${i}">Nombre comercial / principio activo</label>
+          <input type="text" id="dn${i}" placeholder="Ej: Tobradex, Nevanac, Voltaren…"/>
+        </div>
+      </div>
+      <div class="wfg-label">Frecuencia de instilación por semana (pauta descendente):</div>
+      <div class="week-freq-grid">
+        <div class="wfg-header">
+          <span>Semana&nbsp;1</span><span>Semana&nbsp;2</span>
+          <span>Semana&nbsp;3</span><span>Semana&nbsp;4</span><span>Semana&nbsp;5</span>
+        </div>
+        <div class="wfg-selects" id="wfg_${i}">${weekSelects}</div>
+      </div>`;
+    c.appendChild(div);
+    // Style initial selects
+    div.querySelectorAll('.wfg-selects select').forEach(s=>styleSelect(s));
+  }
+}
+
+function styleSelect(sel){
+  if(sel.value==='0') sel.classList.add('inactive');
+  else sel.classList.remove('inactive');
+}
+
+/* ================================================
+   GENERATE SCHEDULE
+================================================ */
+function generateSchedule(){
+  clearError();
+  const name     = document.getElementById('patientName').value.trim();
+  const dstr     = document.getElementById('surgeryDate').value;
+  const nurseName= document.getElementById('nurseName').value.trim();
+  const n        = +document.getElementById('numDrops').value;
+
+  if(!name)  {showError('⚠ Introduce el nombre del paciente.');return}
+  if(!dstr)  {showError('⚠ Selecciona la fecha de cirugía.');return}
+
+  const drops=[];
+  for(let i=0;i<n;i++){
+    const dn=document.getElementById(`dn${i}`).value.trim();
+    if(!dn){showError(`⚠ Introduce el nombre del colirio ${i+1}.`);return}
+    const weekFreqs=[];
+    for(let w=0;w<5;w++){
+      const fv=document.getElementById(`df_${i}_${w}`).value;
+      const fo=FREQ.find(f=>f.v===fv);
+      weekFreqs.push({v:fo.v,lbl:fo.lbl,short:fo.short,times:[...fo.times]});
+    }
+    let lastWeek=0;
+    for(let w=0;w<5;w++){if(weekFreqs[w].v!=='0')lastWeek=w+1}
+    drops.push({name:dn,weekFreqs,lastWeek,idx:i,color:COLORS[i]});
+  }
+
+  const [y,mo,d]=dstr.split('-').map(Number);
+  const surgDate=new Date(y,mo-1,d);
+  const data=buildData(drops,surgDate);
+  renderSchedule(name,nurseName,surgDate,drops,data);
+
+  document.getElementById('formSection').style.display='none';
+  document.getElementById('scheduleOutput').style.display='block';
+  window.scrollTo(0,0);
+}
+
+/* ================================================
+   BUILD SCHEDULE DATA
+================================================ */
+function buildData(drops,surgDate){
+  return Array.from({length:35},(_,i)=>{
+    const dayNum=i+1;
+    const date=new Date(surgDate);
+    date.setDate(date.getDate()+i);
+    const weekNum=Math.ceil(dayNum/7);
+    const timeMap={};
+    for(const drop of drops){
+      const fData=drop.weekFreqs[weekNum-1];
+      if(fData&&fData.times.length>0){
+        for(const t of fData.times){
+          (timeMap[t]||(timeMap[t]=[])).push(drop);
+        }
+      }
+    }
+    const sortedTimes=Object.keys(timeMap).sort();
+    return{dayNum,weekNum,date,timeMap,sortedTimes,hasDoses:sortedTimes.length>0};
+  });
+}
+
+/* ================================================
+   RENDER SCHEDULE
+================================================ */
+function renderSchedule(patientName,nurseName,surgDate,drops,data){
+  const endDate=new Date(surgDate);
+  endDate.setDate(endDate.getDate()+34);
+  const nurseHtml=nurseName
+    ?`<span>👩‍⚕️ <strong>${esc(nurseName)}</strong></span>`:'';
+
+  let html=`
+    <div class="sch-header">
+      <h2>📋 Registro de Administración de Colirios</h2>
+      <div class="patient-meta">
+        <span>👤 <strong>${esc(patientName)}</strong></span>
+        <span>🔪 Cirugía: <strong>${fmtDate(surgDate)}</strong></span>
+        <span>📅 ${fmtDate(surgDate)} — ${fmtDate(endDate)}</span>
+        <span>💊 ${drops.length} colirios</span>
+        ${nurseHtml}
+      </div>
+      ${nurseName?`<div class="nurse-bar">
+        <span>👩‍⚕️</span>
+        <span>Profesional responsable del seguimiento: <strong>${esc(nurseName)}</strong></span>
+        <span style="margin-left:auto;opacity:.7;font-size:.75rem">· El campo «Inic.» de cada dosis es para anotar quién la administra</span>
+      </div>`:''}
+    </div>
+
+    <!-- Screen legend -->
+    <div class="legend no-print">
+      <span class="leg-title">Colirios:</span>
+      ${drops.map(d=>`
+        <span class="leg-item">
+          <span class="leg-dot" style="background:${d.color}"></span>
+          <strong>${esc(d.name)}</strong>
+          <span style="color:var(--g400)">— hasta sem. ${d.lastWeek||'—'}</span>
+        </span>`).join('')}
+    </div>
+
+    <!-- Print legend -->
+    <div class="legend" id="pLegend" style="display:none">
+      <strong style="font-size:.78rem">Colirios: </strong>
+      ${drops.map(d=>`<span class="leg-item">
+        <span class="leg-dot" style="background:${d.color};-webkit-print-color-adjust:exact;print-color-adjust:exact"></span>
+        <strong>${esc(d.name)}</strong> — ${d.weekFreqs.filter(f=>f.v!=='0').map((f,i)=>`S${i+1}:${f.short}`).join(' → ')}
+      </span>`).join(' &nbsp;·&nbsp; ')}
+    </div>
+
+    <style>@media print{#pLegend{display:flex!important}}</style>
+
+    <!-- Week nav (screen only) -->
+    <div class="week-nav no-print">
+      ${[1,2,3,4,5].map(w=>`<button class="wnav-btn" onclick="scrollWeek(${w})" id="wnav${w}">Semana ${w}</button>`).join('')}
+    </div>
+  `;
+
+  /* ----- Weeks ----- */
+  for(let wk=1;wk<=5;wk++){
+    const wDays=data.filter(d=>d.weekNum===wk);
+    const active=drops.filter(d=>d.weekFreqs[wk-1].v!=='0');
+
+    // Build a summary of active drops + their freq for this week
+    const wkSummary=active.map(d=>`<span style="display:inline-flex;align-items:center;gap:.25rem;font-size:.7rem;font-weight:600">
+      <span style="width:7px;height:7px;border-radius:50%;background:${d.color};display:inline-block;-webkit-print-color-adjust:exact;print-color-adjust:exact"></span>
+      ${esc(d.name)}: ${d.weekFreqs[wk-1].short}</span>`).join('&nbsp;&nbsp;');
+
+    html+=`
+      <div class="week-sec week-${wk}" id="wsec${wk}">
+        <div class="week-hdr">
+          <span>📅 Semana ${wk}</span>
+          <span class="week-dates">${fmtShort(wDays[0].date)} – ${fmtShort(wDays[wDays.length-1].date)}</span>
+          <span class="week-badge">${active.length} activo${active.length!==1?'s':''}</span>
+        </div>
+        ${active.length?`<div style="padding:.4rem 1.1rem;background:rgba(0,0,0,.03);border:1px solid var(--g200);border-top:none;font-size:.7rem;display:flex;gap:.8rem;flex-wrap:wrap;align-items:center">
+          <span style="font-weight:700;color:var(--g600);font-size:.68rem;text-transform:uppercase;letter-spacing:.4px">Pauta sem. ${wk}:</span>
+          ${wkSummary}
+        </div>`:''}
+        <div class="days-grid">`;
+
+    for(const day of wDays){
+      const isToday=sameDay(day.date,new Date());
+      html+=`
+        <div class="day-row${isToday?' is-today':''}">
+          <div class="day-lbl">
+            <div class="day-num">Día ${day.dayNum}</div>
+            <div class="day-name">${DIAS[day.date.getDay()]}</div>
+            <div class="day-date">${day.date.getDate()} ${MESES[day.date.getMonth()]}</div>
+          </div>
+          <div class="day-slots">`;
+
+      if(!day.hasDoses){
+        html+=`<div class="no-doses">— Sin dosis programadas —</div>`;
+      } else {
+        for(const time of day.sortedTimes){
+          const doseDrops=day.timeMap[time];
+          html+=`<div class="tg"><span class="t-label">${time}</span><div class="dose-list">`;
+          for(const dr of doseDrops){
+            const cid=`c_${day.dayNum}_${time.replace(':','')}_${dr.idx}`;
+            const nid=`n_${day.dayNum}_${time.replace(':','')}_${dr.idx}`;
+            html+=`
+              <div class="dose-item">
+                <input type="checkbox" id="${cid}"
+                  onchange="saveChk('${cid}',this.checked)"
+                  ${getChk(cid)?'checked':''}/>
+                <label for="${cid}">
+                  <span class="dose-pill" style="background:${dr.color}">
+                    <span class="dot-mini"></span>${esc(dr.name)}
+                  </span>
+                </label>
+                <span class="sig-sep">|</span>
+                <input type="text" class="nurse-sig" id="${nid}"
+                  placeholder="Inic." maxlength="5" title="Iniciales de quien administra"
+                  oninput="saveInit('${nid}',this.value)"
+                  value="${getInit(nid)}"/>
+              </div>`;
+          }
+          html+=`</div></div>`;
+        }
+      }
+      html+=`</div></div>`;
+    }
+    html+=`</div></div>`;
+  }
+
+  /* ----- Summary table ----- */
+  html+=`
+    <div class="sum-section">
+      <h3 class="sum-title">📊 Resumen de Pauta Descendente por Semanas</h3>
+      <table class="sum-table">
+        <thead>
+          <tr>
+            <th style="min-width:150px">Colirio</th>
+            <th>Semana 1<br><small style="font-weight:400;opacity:.65">Días 1–7</small></th>
+            <th>Semana 2<br><small style="font-weight:400;opacity:.65">Días 8–14</small></th>
+            <th>Semana 3<br><small style="font-weight:400;opacity:.65">Días 15–21</small></th>
+            <th>Semana 4<br><small style="font-weight:400;opacity:.65">Días 22–28</small></th>
+            <th>Semana 5<br><small style="font-weight:400;opacity:.65">Días 29–35</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${drops.map(dr=>`
+            <tr>
+              <td>
+                <span style="display:inline-flex;align-items:center;gap:.4rem">
+                  <span style="width:9px;height:9px;border-radius:50%;background:${dr.color};display:inline-block;flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact"></span>
+                  <strong>${esc(dr.name)}</strong>
+                </span>
+              </td>
+              ${[0,1,2,3,4].map(w=>`
+                <td>${dr.weekFreqs[w].v!=='0'
+                  ?`<span class="freq-on" style="background:${dr.color}">${dr.weekFreqs[w].short}</span>`
+                  :`<span class="freq-off">—</span>`}
+                </td>`).join('')}
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="disclaimer">
+      <strong>⚕ Aviso:</strong> Este registro es una guía orientativa generada a partir de la pauta prescrita.
+      Siga siempre las indicaciones específicas del oftalmólogo. En caso de reacción adversa
+      (picor intenso, enrojecimiento, pérdida de visión), interrumpa el tratamiento y acuda a urgencias.
+      El campo «Inic.» de cada dosis debe ser cumplimentado por el profesional sanitario que la administra.
+    </div>`;
+
+  document.getElementById('scheduleContent').innerHTML=html;
+  initWeekNavHL();
+}
+
+/* ================================================
+   WEEK NAV HIGHLIGHT
+================================================ */
+function initWeekNavHL(){
+  if(!window.IntersectionObserver) return;
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const w=e.target.id.replace('wsec','');
+        document.querySelectorAll('.wnav-btn').forEach(b=>b.classList.remove('active'));
+        const btn=document.getElementById('wnav'+w);
+        if(btn) btn.classList.add('active');
+      }
+    });
+  },{threshold:.2});
+  for(let i=1;i<=5;i++){const el=document.getElementById('wsec'+i);if(el)obs.observe(el)}
+}
+function scrollWeek(w){
+  const el=document.getElementById('wsec'+w);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ================================================
+   STATE
+================================================ */
+function saveChk(id,v){checkState[id]=v}
+function getChk(id){return checkState[id]===true}
+function saveInit(id,v){initState[id]=v}
+function getInit(id){return initState[id]||''}
+
+/* ================================================
+   NAV
+================================================ */
+function goBack(){
+  document.getElementById('scheduleOutput').style.display='none';
+  document.getElementById('formSection').style.display='block';
+  window.scrollTo(0,0);
+}
+
+/* ================================================
+   ERROR
+================================================ */
+function showError(msg){
+  const el=document.getElementById('errorMsg');
+  el.textContent=msg;el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function clearError(){document.getElementById('errorMsg').style.display='none'}
+
+/* ================================================
+   UTILS
+================================================ */
+function fmtDate(d){return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`}
+function fmtShort(d){return `${d.getDate()} ${MESES[d.getMonth()].slice(0,3)}.`}
+function sameDay(a,b){
+  return a.getFullYear()===b.getFullYear()&&
+         a.getMonth()===b.getMonth()&&
+         a.getDate()===b.getDate();
+}
+function esc(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
